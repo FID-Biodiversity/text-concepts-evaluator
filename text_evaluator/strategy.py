@@ -167,16 +167,19 @@ class ConceptFractionFilteredByFractionAverageStrategy(CountStatisticsStrategy):
 
     def _create_result(
         self,
-        evaluated_concept_statistics: dict,
+        evaluated_concept_statistics: dict = None,
     ) -> Result:
-        sorted_concepts = [
-            concept_name
-            for concept_name, _ in sorted(
-                evaluated_concept_statistics.items(),
-                key=lambda item: item[1],
-                reverse=True,
-            )
-        ]
+        if evaluated_concept_statistics is None:
+            sorted_concepts = []
+        else:
+            sorted_concepts = [
+                concept_name
+                for concept_name, _ in sorted(
+                    evaluated_concept_statistics.items(),
+                    key=lambda item: item[1],
+                    reverse=True,
+                )
+            ]
 
         return Result(concepts=sorted_concepts)
 
