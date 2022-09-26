@@ -81,21 +81,21 @@ class TestConceptFractionInAllWordsStrategy:
                 ],
             ),
             (  # Scenario - An annotated multi-token word should not change the result
-                    DocumentMetadata(
-                        statistics={
-                            "count": {
-                                "https://www.biofid.de/ontology/2": 1,
-                            }
-                        },
-                        text="<sentence id='12345'>Das ist ein annotierter Text.</sentence>"
-                             "<sentence>Darin kommt auch ein "
-                             "<em class='animal_fauna' biofid-uri-0='https://www.biofid.de/ontology/2'>Procyon lotor</em> "
-                             "vor.</sentence>",
-                    ),
-                    {"min_fraction": 0.1},
-                    [
-                        "https://www.biofid.de/ontology/2",
-                    ],
+                DocumentMetadata(
+                    statistics={
+                        "count": {
+                            "https://www.biofid.de/ontology/2": 1,
+                        }
+                    },
+                    text="<sentence id='12345'>Das ist ein annotierter Text.</sentence>"
+                    "<sentence>Darin kommt auch ein "
+                    "<em class='animal_fauna' biofid-uri-0='https://www.biofid.de/ontology/2'>Procyon lotor</em> "
+                    "vor.</sentence>",
+                ),
+                {"min_fraction": 0.1},
+                [
+                    "https://www.biofid.de/ontology/2",
+                ],
             ),
         ],
         indirect=["strategy"],
@@ -230,6 +230,10 @@ class TestUriFractionFilteredByFractionAverageStrategy:
                     "https://www.biofid.de/ontology/1",
                     "https://www.biofid.de/ontology/3",
                 ],
+            ),
+            (  # Scenario - No concepts are present
+                DocumentMetadata(statistics={'count': {}}),
+                [],
             ),
         ],
     )

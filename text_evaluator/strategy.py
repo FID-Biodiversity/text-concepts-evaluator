@@ -132,6 +132,10 @@ class ConceptFractionFilteredByFractionAverageStrategy(CountStatisticsStrategy):
         avg_concept_fraction = self._calculate_concept_fraction_average(
             document_metadata
         )
+
+        if avg_concept_fraction == 0.0:
+            return self._create_result()
+
         filtered_concepts = self._filter_concepts(
             evaluated_concept_statistics, avg_concept_fraction
         )
@@ -155,6 +159,9 @@ class ConceptFractionFilteredByFractionAverageStrategy(CountStatisticsStrategy):
         number_of_concepts = len(
             document_metadata.statistics[self.evaluated_statistics_name]
         )
+
+        if number_of_concepts == 0:
+            return 0.0
 
         return annotation_count / number_of_concepts
 
