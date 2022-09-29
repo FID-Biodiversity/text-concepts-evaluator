@@ -1,13 +1,58 @@
 import pytest
 
 from text_evaluator.strategy import (
-    DocumentMetadata,
-    ConceptFractionInAllWordsStrategy,
-    ConceptFractionInAllConceptsStrategy,
-    ConceptFractionFilteredByFractionAverageStrategy,
+    AllInSortedStrategy,
     ConceptFilteredByFractionAverageMentionsBoostedStrategy,
+    ConceptFractionFilteredByFractionAverageStrategy,
+    ConceptFractionInAllConceptsStrategy,
+    ConceptFractionInAllWordsStrategy,
+    DocumentMetadata,
     Strategy,
 )
+
+
+class TestAllInSortedStrategy:
+    @pytest.mark.parametrize(
+        ["document_metadata", "expected_concepts"],
+        [
+            (  # Scenario - Default case
+                    DocumentMetadata(
+                        statistics={
+                            "count": {
+                                "https://www.biofid.de/ontology/2": 2,
+                                "https://www.biofid.de/ontology/1": 1,
+                                "https://www.biofid.de/ontology/3": 3,
+                                "https://www.biofid.de/ontology/4": 4,
+                                "https://www.biofid.de/ontology/5": 5,
+                            }
+                        },
+                    ),
+                    [
+                        "https://www.biofid.de/ontology/5",
+                        "https://www.biofid.de/ontology/4",
+                        "https://www.biofid.de/ontology/3",
+                        "https://www.biofid.de/ontology/2",
+                        "https://www.biofid.de/ontology/1"
+                    ],
+            ),
+            (  # Scenario - No concepts are present
+                    DocumentMetadata(statistics={'count': {}}),
+                    [],
+            ),
+        ],
+    )
+    def test_evaluate(
+            self,
+            document_metadata: DocumentMetadata,
+            strategy: Strategy,
+            expected_concepts: list,
+    ):
+        result = strategy.parse(document_metadata)
+        assert result.concepts == expected_concepts
+
+    @pytest.fixture
+    def strategy(self):
+        return AllInSortedStrategy()
 
 
 class TestConceptFractionInAllWordsStrategy:

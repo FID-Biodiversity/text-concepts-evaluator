@@ -1,6 +1,6 @@
 import re
 from abc import ABC, abstractmethod
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import List, Protocol, Optional
 
 
@@ -31,6 +31,24 @@ class CountStatisticsStrategy(ABC):
     """A base class for all Strategies that rely on the count of URIs in the document."""
 
     evaluated_statistics_name = "count"
+
+
+class AllInSortedStrategy(CountStatisticsStrategy):
+    """Simply passes all available concepts sorted by their count."""
+
+    def parse(self, document_metadata: DocumentMetadata) -> Result:
+        return Result(concepts=self.evaluate_metadata(document_metadata))
+
+    def evaluate_metadata(self, document_metadata: DocumentMetadata) -> list:
+        concept_count_data = document_metadata.statistics[
+            self.evaluated_statistics_name
+        ]
+        return [
+            uri
+            for uri, _ in sorted(
+                concept_count_data.items(), key=lambda x: x[1], reverse=True
+            )
+        ]
 
 
 class FractionEvaluationStrategy(CountStatisticsStrategy):
